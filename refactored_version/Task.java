@@ -16,10 +16,11 @@ public class Task {
     }
 
     public void markAsDone() {
-        isDone = true;
+        this.isDone = true;
     }
 
+    @Override
     public String toString() {
-        return description + (isDone ? " (Done)" : " (Pending)");
+        return (isDone ? "[x] " : "[ ] ") + description;
     }
 }
