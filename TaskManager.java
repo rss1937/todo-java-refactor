@@ -2,15 +2,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskManager {
-    private List<Task> tasks = new ArrayList<>();
+    private static TaskManager instance;
+    private List<Task> tasks;
+    private List<Observer> observers;
 
-    public void addTask(String description) {
-        tasks.add(new Task(description));
+    private TaskManager() {
+        tasks = new ArrayList<>();
+        observers = new ArrayList<>();
+    }
+
+    public static TaskManager getInstance() {
+        if (instance == null) {
+            instance = new TaskManager();
+        }
+        return instance;
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers(String message) {
+        for (Observer o : observers) {
+            o.update(message);
+        }
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+        notifyObservers("Task added: " + task.getDescription());
     }
 
     public void markTaskAsDone(int index) {
         if (index >= 0 && index < tasks.size()) {
-            tasks.get(index).markAsDone();
+            Task task = tasks.get(index);
+            task.markAsDone();
+            notifyObservers("Task completed: " + task.getDescription());
         }
     }
 
